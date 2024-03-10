@@ -73,7 +73,7 @@
 					<select class="select" bind:value={command[0]}>
 						<optgroup label="Absolute">
 							{#each Object.entries(pathCommands) as [command, data]}
-								<option value={command}>{data.d}</option>
+								<option value={command}>{data.d} (abs)</option>
 							{/each}
 						</optgroup>
 
