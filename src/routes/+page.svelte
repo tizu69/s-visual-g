@@ -6,11 +6,18 @@
 		size: { w: 16, h: 16 }
 	});
 
-	function parseSvgPath(svgPath: string): string[][] {
-		const commands = svgPath.match(/([A-Za-z])[0-9\s\.,-]*/g);
+	function parseSvgPath(_svgPath: string): string[][] {
+		let svgPath = _svgPath;
+
+		// eval (using new Function()) all {}s in the string and replace the result
+		svgPath = svgPath.replace(/{([^{}]+)}/g, (_, p1) => {
+			return new Function(`return (width, height) => (${p1})`)()($s.size.w, $s.size.h);
+		});
+
+		const commands = svgPath.match(/([A-Za-z])\s?[0-9\s\.,-]*/g);
 		if (!commands) return [];
 
-		return commands.map((command) => [command[0], ...command.slice(1).split(/[,\s]+/)]);
+		return commands.map((command) => [command[0], ...command.slice(1).split(/[,\s]+/)].filter(Boolean));
 	}
 	function stringifySvgPath(commands: string[][]): string {
 		return commands
